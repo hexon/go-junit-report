@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/acarl005/stripansi"
+
 	"github.com/jstemmer/go-junit-report/parser"
 )
 
@@ -182,5 +184,6 @@ func formatBenchmarkTime(d time.Duration) string {
 }
 
 func formatOutput(lines []string) string {
-	return strings.Join(lines, "\n")
+	joined := strings.Join(lines, "\n")
+	return stripansi.Strip(joined)
 }
