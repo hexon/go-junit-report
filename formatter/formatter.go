@@ -104,12 +104,12 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, w
 				testCase.Failure = &JUnitFailure{
 					Message:  "Failed",
 					Type:     "",
-					Contents: strings.Join(test.Output, "\n"),
+					Contents: formatOutput(test.Output),
 				}
 			}
 
 			if test.Result == parser.SKIP {
-				testCase.SkipMessage = &JUnitSkipMessage{strings.Join(test.Output, "\n")}
+				testCase.SkipMessage = &JUnitSkipMessage{formatOutput(test.Output)}
 			}
 
 			ts.TestCases = append(ts.TestCases, testCase)
@@ -179,4 +179,8 @@ func formatTime(d time.Duration) string {
 
 func formatBenchmarkTime(d time.Duration) string {
 	return fmt.Sprintf("%.9f", d.Seconds())
+}
+
+func formatOutput(lines []string) string {
+	return strings.Join(lines, "\n")
 }
