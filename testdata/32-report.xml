@@ -5,7 +5,7 @@
 			<property name="go.version" value="1.0"></property>
 		</properties>
 		<testcase classname="failedsummary" name="TestOne" time="0.000"></testcase>
-		<testcase classname="failedsummary" name="Failure" time="0.000">
+		<testcase classname="failedsummary" name="Error" time="0.000">
 			<error message="Error" type="">panic: panic</error>
 		</testcase>
 	</testsuite>

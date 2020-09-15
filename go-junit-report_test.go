@@ -1521,7 +1521,7 @@ var testCases = []TestCase{
 							Output:   []string{},
 						},
 						{
-							Name:     "Failure",
+							Name:     "Error",
 							Duration: 0,
 							Time:     0,
 							Result:   parser.ERROR,
