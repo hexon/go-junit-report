@@ -43,7 +43,7 @@ type Test struct {
 	Result   Result
 	Output   []string
 
-	SubtestIndent string
+	SubtestIndent int
 
 	// Time is deprecated, use Duration instead.
 	Time int // in milliseconds
@@ -61,12 +61,11 @@ type Benchmark struct {
 
 var (
 	regexStatus   = regexp.MustCompile(`--- (PASS|FAIL|SKIP): (.+) \((\d+\.\d+)(?: seconds|s)\)`)
-	regexIndent   = regexp.MustCompile(`^([ \t]+)---`)
+	regexIndent   = regexp.MustCompile(`^(    |\t)+---`)
 	regexCoverage = regexp.MustCompile(`^coverage:\s+(\d+\.\d+)%\s+of\s+statements(?:\sin\s.+)?$`)
 	regexResult   = regexp.MustCompile(`^(ok|FAIL|\?)\s+([^ ]+)\s+(?:(\d+\.\d+)s|\(cached\)|\[no test files\]|(\[\w+ failed]))(?:\s+coverage:\s+(\d+\.\d+)%\sof\sstatements(?:\sin\s.+)?)?$`)
 	// regexBenchmark captures 3-5 groups: benchmark name, number of times ran, ns/op (with or without decimal), B/op (optional), and allocs/op (optional).
 	regexBenchmark       = regexp.MustCompile(`^(Benchmark[^ -]+)(?:-\d+\s+|\s+)(\d+)\s+(\d+|\d+\.\d+)\sns/op(?:\s+(\d+)\sB/op)?(?:\s+(\d+)\sallocs/op)?`)
-	regexOutput          = regexp.MustCompile(`(    )*\t?(.*)`)
 	regexSummary         = regexp.MustCompile(`^(PASS|FAIL|SKIP)$`)
 	regexPackageWithTest = regexp.MustCompile(`^# ([^\[\]]+) \[[^\]]+\]$`)
 )
@@ -198,7 +197,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			}
 
 			if matches := regexIndent.FindStringSubmatch(line); len(matches) == 2 {
-				test.SubtestIndent = matches[1]
+				test.SubtestIndent = countIndent(matches[1])
 			}
 
 			test.Output = append(test.Output, buffers[cur]...)
@@ -210,15 +209,6 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			test.Time = int(test.Duration / time.Millisecond) // deprecated
 		} else if matches := regexCoverage.FindStringSubmatch(line); len(matches) == 2 {
 			coveragePct = matches[1]
-		} else if matches := regexOutput.FindStringSubmatch(line); capturedPackage == "" && len(matches) == 3 {
-			// Sub-tests start with one or more series of 4-space indents, followed by a hard tab,
-			// followed by the test output
-			// Top-level tests start with a hard tab.
-			test := findTest(tests, cur)
-			if test == nil {
-				continue
-			}
-			test.Output = append(test.Output, matches[2])
 		} else if strings.HasPrefix(line, "# ") {
 			// indicates a capture of build output of a package. set the current build package.
 			packageWithTestBinary := regexPackageWithTest.FindStringSubmatch(line)
@@ -238,15 +228,13 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			// summary is captured separately.
 			cur = ""
 		} else {
-			// buffer anything else that we didn't recognize
-			buffers[cur] = append(buffers[cur], line)
-
-			// if we have a current test, also append to its output
+			// if we have a current test, append to its output
 			test := findTest(tests, cur)
 			if test != nil {
-				if strings.HasPrefix(line, test.SubtestIndent+"    ") {
-					test.Output = append(test.Output, strings.TrimPrefix(line, test.SubtestIndent+"    "))
-				}
+				test.Output = append(test.Output, stripIndent(line, test.SubtestIndent+1))
+			} else {
+				// buffer anything else that we didn't recognize
+				buffers[cur] = append(buffers[cur], line)
 			}
 		}
 	}
@@ -316,4 +304,33 @@ func (r *Report) Failures() int {
 	}
 
 	return count
+}
+
+func countIndent(s string) int {
+	n := 0
+	for {
+		if t := strings.TrimPrefix(s, "\t"); t != s {
+			n++
+			s = t
+		} else if t := strings.TrimPrefix(s, "    "); t != s {
+			n++
+			s = t
+		} else {
+			break
+		}
+	}
+	return n
+}
+
+func stripIndent(s string, n int) string {
+	for ; n > 0; n-- {
+		if t := strings.TrimPrefix(s, "\t"); t != s {
+			s = t
+		} else if t := strings.TrimPrefix(s, "    "); t != s {
+			s = t
+		} else {
+			break
+		}
+	}
+	return s
 }
