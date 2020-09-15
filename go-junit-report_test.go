@@ -586,7 +586,7 @@ var testCases = []TestCase{
 							Name:     "[build failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"failing1/failing_test.go:15: undefined: x",
 							},
@@ -600,7 +600,7 @@ var testCases = []TestCase{
 							Name:     "[build failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"failing2/another_failing_test.go:20: undefined: y",
 							},
@@ -614,7 +614,7 @@ var testCases = []TestCase{
 							Name:     "[setup failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"setupfailing1/failing_test.go:4: cannot find package \"other/package\" in any of:",
 								"\t/path/vendor (vendor tree)",
@@ -638,8 +638,8 @@ var testCases = []TestCase{
 					Time:     3,
 					Tests: []*parser.Test{
 						{
-							Name:   "Failure",
-							Result: parser.FAIL,
+							Name:   "Error",
+							Result: parser.ERROR,
 							Output: []string{
 								"panic: init",
 								"stacktrace",
@@ -653,8 +653,8 @@ var testCases = []TestCase{
 					Time:     3,
 					Tests: []*parser.Test{
 						{
-							Name:   "Failure",
-							Result: parser.FAIL,
+							Name:   "Error",
+							Result: parser.ERROR,
 							Output: []string{
 								"panic: init",
 								"stacktrace",
@@ -1461,7 +1461,7 @@ var testCases = []TestCase{
 							Name:     "[build failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"failing1/failing_test.go:15: undefined: x",
 							},
@@ -1475,7 +1475,7 @@ var testCases = []TestCase{
 							Name:     "[build failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"failing2/another_failing_test.go:20: undefined: y",
 							},
@@ -1489,7 +1489,7 @@ var testCases = []TestCase{
 							Name:     "[setup failed]",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output: []string{
 								"setupfailing1/failing_test.go:4: cannot find package \"other/package\" in any of:",
 								"\t/path/vendor (vendor tree)",
@@ -1523,7 +1523,7 @@ var testCases = []TestCase{
 							Name:     "Failure",
 							Duration: 0,
 							Time:     0,
-							Result:   parser.FAIL,
+							Result:   parser.ERROR,
 							Output:   []string{"panic: panic"},
 						},
 					},
@@ -1692,7 +1692,7 @@ func testJUnitFormatter(t *testing.T, goVersion string) {
 			}
 
 			if string(junitReport.Bytes()) != report {
-				t.Errorf("Report XML\nEXP: %q\nGOT: %q", report, string(junitReport.Bytes()))
+				t.Errorf("Report XML\nEXP:\n%s\nGOT:\n%s", report, string(junitReport.Bytes()))
 			}
 		})
 	}

@@ -11,11 +11,12 @@ func _() {
 	_ = x[PASS-0]
 	_ = x[FAIL-1]
 	_ = x[SKIP-2]
+	_ = x[ERROR-3]
 }
 
-const _Result_name = "PASSFAILSKIP"
+const _Result_name = "PASSFAILSKIPERROR"
 
-var _Result_index = [...]uint8{0, 4, 8, 12}
+var _Result_index = [...]uint8{0, 4, 8, 12, 17}
 
 func (i Result) String() string {
 	if i < 0 || i >= Result(len(_Result_index)-1) {

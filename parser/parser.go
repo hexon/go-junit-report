@@ -17,6 +17,7 @@ const (
 	PASS Result = iota
 	FAIL
 	SKIP
+	ERROR
 )
 
 // Report is a collection of package tests.
@@ -144,11 +145,11 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				coveragePct = matches[5]
 			}
 			if strings.HasSuffix(matches[4], "failed]") {
-				// the build of the package failed, inject a dummy test into the package
-				// which indicate about the failure and contain the failure description.
+				// the build of the package failed, inject a test error into the package
+				// which indicate about the error and contain the error description.
 				tests = append(tests, &Test{
 					Name:   matches[4],
-					Result: FAIL,
+					Result: ERROR,
 					Output: packageCaptures[matches[2]],
 				})
 			} else if matches[1] == "FAIL" && !containsFailures(tests) && len(buffers[cur]) > 0 {
@@ -156,8 +157,8 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				// failed with some output. Create a dummy test with the
 				// output.
 				tests = append(tests, &Test{
-					Name:   "Failure",
-					Result: FAIL,
+					Name:   "Error",
+					Result: ERROR,
 					Output: buffers[cur],
 				})
 				buffers[cur] = buffers[cur][0:0]

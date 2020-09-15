@@ -26,6 +26,8 @@ type JUnitTestSuite struct {
 	XMLName    xml.Name        `xml:"testsuite"`
 	Tests      int             `xml:"tests,attr"`
 	Failures   int             `xml:"failures,attr"`
+	Errors     int             `xml:"errors,attr"`
+	Skipped    int             `xml:"skipped,attr"`
 	Time       string          `xml:"time,attr"`
 	Name       string          `xml:"name,attr"`
 	Properties []JUnitProperty `xml:"properties>property,omitempty"`
@@ -39,7 +41,9 @@ type JUnitTestCase struct {
 	Name        string            `xml:"name,attr"`
 	Time        string            `xml:"time,attr"`
 	SkipMessage *JUnitSkipMessage `xml:"skipped,omitempty"`
+	Error       *JUnitError       `xml:"error,omitempty"`
 	Failure     *JUnitFailure     `xml:"failure,omitempty"`
+	SystemOut   string            `xml:",comment"` // A <system-out> element exists in <testsuite> but not in <testcase>
 }
 
 // JUnitSkipMessage contains the reason why a testcase was skipped.
@@ -51,6 +55,13 @@ type JUnitSkipMessage struct {
 type JUnitProperty struct {
 	Name  string `xml:"name,attr"`
 	Value string `xml:"value,attr"`
+}
+
+// JUnitError contains data related to a test error.
+type JUnitError struct {
+	Message  string `xml:"message,attr"`
+	Type     string `xml:"type,attr"`
+	Contents string `xml:",chardata"`
 }
 
 // JUnitFailure contains data related to a failed test.
@@ -71,6 +82,7 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, w
 		ts := JUnitTestSuite{
 			Tests:      len(pkg.Tests) + len(pkg.Benchmarks),
 			Failures:   0,
+			Errors:     0,
 			Time:       formatTime(pkg.Duration),
 			Name:       pkg.Name,
 			Properties: []JUnitProperty{},
@@ -101,17 +113,28 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, w
 				Failure:   nil,
 			}
 
-			if test.Result == parser.FAIL {
+			switch test.Result {
+			case parser.SKIP:
+				ts.Skipped++
+				testCase.SkipMessage = &JUnitSkipMessage{
+					Message: formatOutput(test.Output),
+				}
+			case parser.ERROR:
+				ts.Errors++
+				testCase.Error = &JUnitError{
+					Message:  "Error",
+					Type:     "",
+					Contents: formatOutput(test.Output),
+				}
+			case parser.FAIL:
 				ts.Failures++
 				testCase.Failure = &JUnitFailure{
 					Message:  "Failed",
 					Type:     "",
 					Contents: formatOutput(test.Output),
 				}
-			}
-
-			if test.Result == parser.SKIP {
-				testCase.SkipMessage = &JUnitSkipMessage{formatOutput(test.Output)}
+			case parser.PASS:
+				testCase.SystemOut = formatOutput(test.Output)
 			}
 
 			ts.TestCases = append(ts.TestCases, testCase)
