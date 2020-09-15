@@ -4,8 +4,11 @@
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="small" name="BenchmarkItsy" time="0.000000045"></testcase>
-		<testcase classname="small" name="BenchmarkTeeny" time="0.000000002"></testcase>
-		<testcase classname="small" name="BenchmarkWeeny" time="0.000000000"></testcase>
+		<testcase classname="small" name="BenchmarkItsy" time="0.000000045">
+			<!--BenchmarkItsy-8    	  30000000	         45.7 ns/op--></testcase>
+		<testcase classname="small" name="BenchmarkTeeny" time="0.000000002">
+			<!--BenchmarkTeeny-8      1000000000	         2.12 ns/op--></testcase>
+		<testcase classname="small" name="BenchmarkWeeny" time="0.000000000">
+			<!--BenchmarkWeeny-8      2000000000	         0.26 ns/op--></testcase>
 	</testsuite>
 </testsuites>

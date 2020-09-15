@@ -141,6 +141,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				// repeated execution of the same benchmark with different N
 				test.Duration = parseNanoseconds(matches[3])
 			}
+			test.Output = append(test.Output, line)
 		} else if strings.HasPrefix(line, "=== PAUSE ") {
 			continue
 		} else if strings.HasPrefix(line, "=== CONT ") {

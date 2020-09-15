@@ -4,16 +4,22 @@
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="common" name="BenchmarkParse" time="0.000001591"></testcase>
-		<testcase classname="common" name="BenchmarkNewTask" time="0.000000391"></testcase>
+		<testcase classname="common" name="BenchmarkParse" time="0.000001591">
+			<!--BenchmarkParse-8                   	 1000000	      1591 ns/op--></testcase>
+		<testcase classname="common" name="BenchmarkNewTask" time="0.000000391">
+			<!--BenchmarkNewTask-8                 	 3000000	       391 ns/op--></testcase>
 	</testsuite>
 	<testsuite tests="4" failures="0" errors="0" skipped="0" time="47.084000000" name="mycode/benchmarks/channels">
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="channels" name="BenchmarkFanout/Channel/10" time="0.000004673"></testcase>
-		<testcase classname="channels" name="BenchmarkFanout/Channel/100" time="0.000024965"></testcase>
-		<testcase classname="channels" name="BenchmarkFanout/Channel/1000" time="0.000195672"></testcase>
-		<testcase classname="channels" name="BenchmarkFanout/Channel/10000" time="0.002410200"></testcase>
+		<testcase classname="channels" name="BenchmarkFanout/Channel/10" time="0.000004673">
+			<!--BenchmarkFanout/Channel/10-8         	  500000	      4673 ns/op--></testcase>
+		<testcase classname="channels" name="BenchmarkFanout/Channel/100" time="0.000024965">
+			<!--BenchmarkFanout/Channel/100-8        	   50000	     24965 ns/op--></testcase>
+		<testcase classname="channels" name="BenchmarkFanout/Channel/1000" time="0.000195672">
+			<!--BenchmarkFanout/Channel/1000-8       	   10000	    195672 ns/op--></testcase>
+		<testcase classname="channels" name="BenchmarkFanout/Channel/10000" time="0.002410200">
+			<!--BenchmarkFanout/Channel/10000-8      	     500	   2410200 ns/op--></testcase>
 	</testsuite>
 </testsuites>

@@ -4,7 +4,9 @@
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="basic" name="BenchmarkParse" time="0.000000604"></testcase>
-		<testcase classname="basic" name="BenchmarkReadingList" time="0.000001425"></testcase>
+		<testcase classname="basic" name="BenchmarkParse" time="0.000000604">
+			<!--BenchmarkParse-8                     2000000	       604 ns/op--></testcase>
+		<testcase classname="basic" name="BenchmarkReadingList" time="0.000001425">
+			<!--BenchmarkReadingList-8               1000000	      1425 ns/op--></testcase>
 	</testsuite>
 </testsuites>

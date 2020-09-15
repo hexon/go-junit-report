@@ -4,7 +4,17 @@
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="count" name="BenchmarkNew" time="0.000000345"></testcase>
-		<testcase classname="count" name="BenchmarkFew" time="0.000000102"></testcase>
+		<testcase classname="count" name="BenchmarkNew" time="0.000000345">
+			<!--BenchmarkNew-8   	 5000000	       350 ns/op	      80 B/op	       3 allocs/op
+BenchmarkNew-8   	 5000000	       357 ns/op	      80 B/op	       3 allocs/op
+BenchmarkNew-8   	 5000000	       354 ns/op	      80 B/op	       3 allocs/op
+BenchmarkNew-8   	 5000000	       358 ns/op	      80 B/op	       3 allocs/op
+BenchmarkNew-8   	 5000000	       345 ns/op	      80 B/op	       3 allocs/op--></testcase>
+		<testcase classname="count" name="BenchmarkFew" time="0.000000102">
+			<!--BenchmarkFew-8   	 5000000	       100 ns/op	      20 B/op	       1 allocs/op
+BenchmarkFew-8   	 5000000	       105 ns/op	      20 B/op	       1 allocs/op
+BenchmarkFew-8   	 5000000	       102 ns/op	      20 B/op	       1 allocs/op
+BenchmarkFew-8   	 5000000	       102 ns/op	      20 B/op	       1 allocs/op
+BenchmarkFew-8   	 5000000	       102 ns/op	      20 B/op	       1 allocs/op--></testcase>
 	</testsuite>
 </testsuites>
