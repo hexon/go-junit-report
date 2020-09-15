@@ -54,7 +54,7 @@ var (
 	regexCoverage = regexp.MustCompile(`^coverage:\s+(\d+\.\d+)%\s+of\s+statements(?:\sin\s.+)?$`)
 	regexResult   = regexp.MustCompile(`^(ok|FAIL|\?)\s+([^ ]+)\s+(?:(\d+\.\d+)s|\(cached\)|\[no test files\]|(\[\w+ failed]))(?:\s+coverage:\s+(\d+\.\d+)%\sof\sstatements(?:\sin\s.+)?)?$`)
 	// regexBenchmark captures 3-5 groups: benchmark name, number of times ran, ns/op (with or without decimal), B/op (optional), and allocs/op (optional).
-	regexBenchmark       = regexp.MustCompile(`^(Benchmark[^ -]+)(?:-\d+\s+|\s+)(\d+)\s+(\d+|\d+\.\d+)\sns/op(?:\s+(\d+)\sB/op)?(?:\s+(\d+)\sallocs/op)?`)
+	regexBenchmark       = regexp.MustCompile(`^(Benchmark[^ -]+)(?:(?:-\d+\s+|\s+)(\d+)\s+(\d+|\d+\.\d+)\sns/op(?:\s+(\d+)\sB/op)?(?:\s+(\d+)\sallocs/op)?)?$`)
 	regexLog             = regexp.MustCompile(`^(    |\t)+(.+\.go:\d+: .*)$`)
 	regexSummary         = regexp.MustCompile(`^(PASS|FAIL|SKIP)$`)
 	regexPackageWithTest = regexp.MustCompile(`^# ([^\[\]]+) \[[^\]]+\]$`)
@@ -113,7 +113,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 
 			// clear the current build package, so output lines won't be added to that build
 			capturedPackage = ""
-		} else if matches := regexBenchmark.FindStringSubmatch(line); len(matches) == 6 {
+		} else if matches := regexBenchmark.FindStringSubmatch(line); len(matches) > 0 {
 			if test := findTest(tests, cur); test != nil &&
 				len(test.Output) >= 3 &&
 				strings.HasPrefix(test.Output[len(test.Output)-3], "goos: ") &&
