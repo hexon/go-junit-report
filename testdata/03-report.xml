@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-	<testsuite tests="2" failures="0" errors="0" skipped="1" time="0.150" name="package/name">
+	<testsuite tests="2" failures="0" errors="0" skipped="1" time="0.150000000" name="package/name">
 		<properties>
 			<property name="go.version" value="1.0"></property>
 		</properties>
-		<testcase classname="name" name="TestOne" time="0.020">
+		<testcase classname="name" name="TestOne" time="0.020000000">
 			<skipped message="file_test.go:11: Skip message"></skipped>
 		</testcase>
-		<testcase classname="name" name="TestTwo" time="0.130"></testcase>
+		<testcase classname="name" name="TestTwo" time="0.130000000"></testcase>
 	</testsuite>
 </testsuites>

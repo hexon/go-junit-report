@@ -145,7 +145,7 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, s
 			benchmarkCase := JUnitTestCase{
 				Classname: classname,
 				Name:      benchmark.Name,
-				Time:      formatBenchmarkTime(benchmark.Duration),
+				Time:      formatTime(benchmark.Duration),
 			}
 
 			ts.TestCases = append(ts.TestCases, benchmarkCase)
@@ -199,10 +199,6 @@ func mergeBenchmarks(benchmarks []*parser.Benchmark) []*parser.Benchmark {
 }
 
 func formatTime(d time.Duration) string {
-	return fmt.Sprintf("%.3f", d.Seconds())
-}
-
-func formatBenchmarkTime(d time.Duration) string {
 	return fmt.Sprintf("%.9f", d.Seconds())
 }
 
