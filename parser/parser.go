@@ -201,7 +201,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				test.SubtestIndent = matches[1]
 			}
 
-			test.Output = buffers[cur]
+			test.Output = append(test.Output, buffers[cur]...)
 
 			test.Name = matches[2]
 			test.Duration = parseSeconds(matches[3])
