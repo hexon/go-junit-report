@@ -73,7 +73,7 @@ type JUnitFailure struct {
 
 // JUnitReportXML writes a JUnit xml representation of the given report to w
 // in the format described at http://windyroad.org/dl/Open%20Source/JUnit.xsd
-func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, w io.Writer) error {
+func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, stripANSIEscape bool, w io.Writer) error {
 	suites := JUnitTestSuites{}
 
 	// convert Report to JUnit test suites
@@ -117,24 +117,24 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, w
 			case parser.SKIP:
 				ts.Skipped++
 				testCase.SkipMessage = &JUnitSkipMessage{
-					Message: formatOutput(test.Output),
+					Message: formatOutput(test.Output, stripANSIEscape),
 				}
 			case parser.ERROR:
 				ts.Errors++
 				testCase.Error = &JUnitError{
 					Message:  "Error",
 					Type:     "",
-					Contents: formatOutput(test.Output),
+					Contents: formatOutput(test.Output, stripANSIEscape),
 				}
 			case parser.FAIL:
 				ts.Failures++
 				testCase.Failure = &JUnitFailure{
 					Message:  "Failed",
 					Type:     "",
-					Contents: formatOutput(test.Output),
+					Contents: formatOutput(test.Output, stripANSIEscape),
 				}
 			case parser.PASS:
-				testCase.SystemOut = formatOutput(test.Output)
+				testCase.SystemOut = formatOutput(test.Output, stripANSIEscape)
 			}
 
 			ts.TestCases = append(ts.TestCases, testCase)
@@ -206,7 +206,10 @@ func formatBenchmarkTime(d time.Duration) string {
 	return fmt.Sprintf("%.9f", d.Seconds())
 }
 
-func formatOutput(lines []string) string {
+func formatOutput(lines []string, stripANSIEscape bool) string {
 	joined := strings.Join(lines, "\n")
-	return stripansi.Strip(joined)
+	if stripANSIEscape {
+		joined = stripansi.Strip(joined)
+	}
+	return joined
 }
