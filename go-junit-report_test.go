@@ -1531,6 +1531,41 @@ var testCases = []TestCase{
 			},
 		},
 	},
+	{
+		name:       "33-fail-go_1_15.txt",
+		reportName: "33-report.xml",
+		report: &parser.Report{
+			Packages: []parser.Package{
+				{
+					Name:     "example.com/test",
+					Duration: 5 * time.Millisecond,
+					Time:     5,
+					Tests: []*parser.Test{
+						{
+							Name:     "TestFoo",
+							Duration: 0,
+							Time:     0,
+							Result:   parser.FAIL,
+							Output: []string{
+								"foo_test.go:6: Error message",
+							},
+						},
+						{
+							Name:     "TestBar",
+							Duration: 0,
+							Time:     0,
+							Result:   parser.FAIL,
+							Output: []string{
+								"foo_test.go:10: Longer",
+								"    error",
+								"    message.",
+							},
+						},
+					},
+				},
+			},
+		},
+	},
 }
 
 func TestParser(t *testing.T) {

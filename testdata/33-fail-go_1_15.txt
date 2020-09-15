@@ -1,0 +1,11 @@
+=== RUN   TestFoo
+    foo_test.go:6: Error message
+--- FAIL: TestFoo (0.00s)
+=== RUN   TestBar
+    foo_test.go:10: Longer
+        error
+        message.
+--- FAIL: TestBar (0.00s)
+FAIL
+exit status 1
+FAIL	example.com/test	0.005s
