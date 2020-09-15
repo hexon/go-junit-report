@@ -78,9 +78,8 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, s
 
 	// convert Report to JUnit test suites
 	for _, pkg := range report.Packages {
-		pkg.Benchmarks = mergeBenchmarks(pkg.Benchmarks)
 		ts := JUnitTestSuite{
-			Tests:      len(pkg.Tests) + len(pkg.Benchmarks),
+			Tests:      len(pkg.Tests),
 			Failures:   0,
 			Errors:     0,
 			Time:       formatTime(pkg.Duration),
@@ -140,17 +139,6 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, s
 			ts.TestCases = append(ts.TestCases, testCase)
 		}
 
-		// individual benchmarks
-		for _, benchmark := range pkg.Benchmarks {
-			benchmarkCase := JUnitTestCase{
-				Classname: classname,
-				Name:      benchmark.Name,
-				Time:      formatTime(benchmark.Duration),
-			}
-
-			ts.TestCases = append(ts.TestCases, benchmarkCase)
-		}
-
 		suites.Suites = append(suites.Suites, ts)
 	}
 
@@ -171,31 +159,6 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, s
 	writer.Flush()
 
 	return nil
-}
-
-func mergeBenchmarks(benchmarks []*parser.Benchmark) []*parser.Benchmark {
-	var merged []*parser.Benchmark
-	benchmap := make(map[string][]*parser.Benchmark)
-	for _, bm := range benchmarks {
-		if _, ok := benchmap[bm.Name]; !ok {
-			merged = append(merged, &parser.Benchmark{Name: bm.Name})
-		}
-		benchmap[bm.Name] = append(benchmap[bm.Name], bm)
-	}
-
-	for _, bm := range merged {
-		for _, b := range benchmap[bm.Name] {
-			bm.Allocs += b.Allocs
-			bm.Bytes += b.Bytes
-			bm.Duration += b.Duration
-		}
-		n := len(benchmap[bm.Name])
-		bm.Allocs /= n
-		bm.Bytes /= n
-		bm.Duration /= time.Duration(n)
-	}
-
-	return merged
 }
 
 func formatTime(d time.Duration) string {

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"io"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -30,7 +29,6 @@ type Package struct {
 	Name        string
 	Duration    time.Duration
 	Tests       []*Test
-	Benchmarks  []*Benchmark
 	CoveragePct string
 
 	// Time is deprecated, use Duration instead.
@@ -48,16 +46,6 @@ type Test struct {
 
 	// Time is deprecated, use Duration instead.
 	Time int // in milliseconds
-}
-
-// Benchmark contains the results of a single benchmark.
-type Benchmark struct {
-	Name     string
-	Duration time.Duration
-	// number of B/op
-	Bytes int
-	// number of allocs/op
-	Allocs int
 }
 
 var (
@@ -82,9 +70,6 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 
 	// keep track of tests we find
 	var tests []*Test
-
-	// keep track of benchmarks we find
-	var benchmarks []*Benchmark
 
 	// sum of tests' time, use this if current test has no result line (when it is compiled test)
 	var testsTime time.Duration
@@ -129,15 +114,33 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			// clear the current build package, so output lines won't be added to that build
 			capturedPackage = ""
 		} else if matches := regexBenchmark.FindStringSubmatch(line); len(matches) == 6 {
-			bytes, _ := strconv.Atoi(matches[4])
-			allocs, _ := strconv.Atoi(matches[5])
+			if test := findTest(tests, cur); test != nil &&
+				len(test.Output) >= 3 &&
+				strings.HasPrefix(test.Output[len(test.Output)-3], "goos: ") &&
+				strings.HasPrefix(test.Output[len(test.Output)-2], "goarch: ") &&
+				strings.HasPrefix(test.Output[len(test.Output)-1], "pkg: ") {
+				// benchmarks header was interpreted as test output for the last test; discard it
+				test.Output = test.Output[:len(test.Output)-3]
+			}
+			cur = matches[1]
 
-			benchmarks = append(benchmarks, &Benchmark{
-				Name:     matches[1],
-				Duration: parseNanoseconds(matches[3]),
-				Bytes:    bytes,
-				Allocs:   allocs,
-			})
+			//bytes, _ := strconv.Atoi(matches[4])
+			//allocs, _ := strconv.Atoi(matches[5])
+
+			test := findTest(tests, cur)
+			if test == nil {
+				// first execution of this benchmark
+				test = &Test{
+					Name:     cur,
+					Result:   PASS,
+					Duration: parseNanoseconds(matches[3]),
+					Output:   make([]string, 0),
+				}
+				tests = append(tests, test)
+			} else {
+				// repeated execution of the same benchmark with different N
+				test.Duration = parseNanoseconds(matches[3])
+			}
 		} else if strings.HasPrefix(line, "=== PAUSE ") {
 			continue
 		} else if strings.HasPrefix(line, "=== CONT ") {
@@ -172,7 +175,6 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				Name:        matches[2],
 				Duration:    parseSeconds(matches[3]),
 				Tests:       tests,
-				Benchmarks:  benchmarks,
 				CoveragePct: coveragePct,
 
 				Time: int(parseSeconds(matches[3]) / time.Millisecond), // deprecated
@@ -180,7 +182,6 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 
 			buffers[cur] = buffers[cur][0:0]
 			tests = make([]*Test, 0)
-			benchmarks = make([]*Benchmark, 0)
 			coveragePct = ""
 			cur = ""
 			testsTime = 0
@@ -266,7 +267,6 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			Duration:    testsTime,
 			Time:        int(testsTime / time.Millisecond),
 			Tests:       tests,
-			Benchmarks:  benchmarks,
 			CoveragePct: coveragePct,
 		})
 	}

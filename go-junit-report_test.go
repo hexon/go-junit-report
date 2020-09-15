@@ -925,14 +925,18 @@ var testCases = []TestCase{
 					Name:     "package/basic",
 					Duration: 3212 * time.Millisecond,
 					Time:     3212,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkParse",
 							Duration: 604 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkReadingList",
 							Duration: 1425 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -948,18 +952,18 @@ var testCases = []TestCase{
 					Name:     "package/one",
 					Duration: 9415 * time.Millisecond,
 					Time:     9415,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkIpsHistoryInsert",
 							Duration: 52568 * time.Nanosecond,
-							Bytes:    24879,
-							Allocs:   494,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkIpsHistoryLookup",
 							Duration: 15208 * time.Nanosecond,
-							Bytes:    7369,
-							Allocs:   143,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1004,19 +1008,17 @@ var testCases = []TestCase{
 							Result:   parser.PASS,
 							Output:   []string{},
 						},
-					},
-					Benchmarks: []*parser.Benchmark{
 						{
 							Name:     "BenchmarkDeepMerge",
 							Duration: 2611 * time.Nanosecond,
-							Bytes:    1110,
-							Allocs:   16,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkNext",
 							Duration: 100 * time.Nanosecond,
-							Bytes:    100,
-							Allocs:   1,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1032,66 +1034,18 @@ var testCases = []TestCase{
 					Name:     "pkg/count",
 					Duration: 14211 * time.Millisecond,
 					Time:     14211,
-					Benchmarks: []*parser.Benchmark{
-						{
-							Name:     "BenchmarkNew",
-							Duration: 350 * time.Nanosecond,
-							Bytes:    80,
-							Allocs:   3,
-						},
-						{
-							Name:     "BenchmarkNew",
-							Duration: 357 * time.Nanosecond,
-							Bytes:    80,
-							Allocs:   3,
-						},
-						{
-							Name:     "BenchmarkNew",
-							Duration: 354 * time.Nanosecond,
-							Bytes:    80,
-							Allocs:   3,
-						},
-						{
-							Name:     "BenchmarkNew",
-							Duration: 358 * time.Nanosecond,
-							Bytes:    80,
-							Allocs:   3,
-						},
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkNew",
 							Duration: 345 * time.Nanosecond,
-							Bytes:    80,
-							Allocs:   3,
-						},
-						{
-							Name:     "BenchmarkFew",
-							Duration: 100 * time.Nanosecond,
-							Bytes:    20,
-							Allocs:   1,
-						},
-						{
-							Name:     "BenchmarkFew",
-							Duration: 105 * time.Nanosecond,
-							Bytes:    20,
-							Allocs:   1,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkFew",
 							Duration: 102 * time.Nanosecond,
-							Bytes:    20,
-							Allocs:   1,
-						},
-						{
-							Name:     "BenchmarkFew",
-							Duration: 102 * time.Nanosecond,
-							Bytes:    20,
-							Allocs:   1,
-						},
-						{
-							Name:     "BenchmarkFew",
-							Duration: 102 * time.Nanosecond,
-							Bytes:    20,
-							Allocs:   1,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1107,14 +1061,18 @@ var testCases = []TestCase{
 					Name:     "mycode/common",
 					Duration: 7267 * time.Millisecond,
 					Time:     7267,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkParse",
 							Duration: 1591 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkNewTask",
 							Duration: 391 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1122,22 +1080,30 @@ var testCases = []TestCase{
 					Name:     "mycode/benchmarks/channels",
 					Duration: 47084 * time.Millisecond,
 					Time:     47084,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkFanout/Channel/10",
 							Duration: 4673 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkFanout/Channel/100",
 							Duration: 24965 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkFanout/Channel/1000",
 							Duration: 195672 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkFanout/Channel/10000",
 							Duration: 2410200 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1153,18 +1119,24 @@ var testCases = []TestCase{
 					Name:     "really/small",
 					Duration: 4344 * time.Millisecond,
 					Time:     4344,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkItsy",
 							Duration: 45 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkTeeny",
 							Duration: 2 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 						{
 							Name:     "BenchmarkWeeny",
 							Duration: 0 * time.Second,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1180,10 +1152,12 @@ var testCases = []TestCase{
 					Name:     "single/cpu",
 					Duration: 9467 * time.Millisecond,
 					Time:     9467,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkRing",
 							Duration: 74 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1199,10 +1173,12 @@ var testCases = []TestCase{
 					Name:     "sixteen/cpu",
 					Duration: 1522 * time.Millisecond,
 					Time:     1522,
-					Benchmarks: []*parser.Benchmark{
+					Tests: []*parser.Test{
 						{
 							Name:     "BenchmarkRingaround",
 							Duration: 13571 * time.Nanosecond,
+							Result:   parser.PASS,
+							Output:   []string{},
 						},
 					},
 				},
@@ -1637,32 +1613,6 @@ func TestParser(t *testing.T) {
 							expTestOutput := strings.Join(expTest.Output, "\n")
 							if testOutput != expTestOutput {
 								t.Errorf("Test.Output\nEXP: %q\nGOT: %q", expTestOutput, testOutput)
-							}
-						})
-					}
-
-					if len(pkg.Benchmarks) != len(expPkg.Benchmarks) {
-						t.Fatalf("Package Benchmarks == %d, want %d", len(pkg.Benchmarks), len(expPkg.Benchmarks))
-					}
-
-					for j, benchmark := range pkg.Benchmarks {
-						expBenchmark := expPkg.Benchmarks[j]
-
-						t.Run(expBenchmark.Name, func(t *testing.T) {
-							if benchmark.Name != expBenchmark.Name {
-								t.Errorf("Test.Name == %s, want %s", benchmark.Name, expBenchmark.Name)
-							}
-
-							if benchmark.Duration != expBenchmark.Duration {
-								t.Errorf("benchmark.Duration == %s, want %s", benchmark.Duration, expBenchmark.Duration)
-							}
-
-							if benchmark.Bytes != expBenchmark.Bytes {
-								t.Errorf("benchmark.Bytes == %d, want %d", benchmark.Bytes, expBenchmark.Bytes)
-							}
-
-							if benchmark.Allocs != expBenchmark.Allocs {
-								t.Errorf("benchmark.Allocs == %d, want %d", benchmark.Allocs, expBenchmark.Allocs)
 							}
 						})
 					}
