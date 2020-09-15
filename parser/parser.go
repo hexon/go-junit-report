@@ -67,6 +67,7 @@ var (
 	regexResult   = regexp.MustCompile(`^(ok|FAIL|\?)\s+([^ ]+)\s+(?:(\d+\.\d+)s|\(cached\)|\[no test files\]|(\[\w+ failed]))(?:\s+coverage:\s+(\d+\.\d+)%\sof\sstatements(?:\sin\s.+)?)?$`)
 	// regexBenchmark captures 3-5 groups: benchmark name, number of times ran, ns/op (with or without decimal), B/op (optional), and allocs/op (optional).
 	regexBenchmark       = regexp.MustCompile(`^(Benchmark[^ -]+)(?:-\d+\s+|\s+)(\d+)\s+(\d+|\d+\.\d+)\sns/op(?:\s+(\d+)\sB/op)?(?:\s+(\d+)\sallocs/op)?`)
+	regexLog             = regexp.MustCompile(`^(    |\t)+(.+\.go:\d+: .*)$`)
 	regexSummary         = regexp.MustCompile(`^(PASS|FAIL|SKIP)$`)
 	regexPackageWithTest = regexp.MustCompile(`^# ([^\[\]]+) \[[^\]]+\]$`)
 )
@@ -104,6 +105,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 	var buffers = map[string][]string{}
 
 	// parse lines
+	logContinuing := false
 	for {
 		l, _, err := reader.ReadLine()
 		if err != nil && err == io.EOF {
@@ -114,6 +116,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 
 		line := string(l)
 
+		wasOutput := false
 		if strings.HasPrefix(line, "=== RUN ") {
 			// new test
 			cur = strings.TrimSpace(line[8:])
@@ -231,12 +234,28 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 		} else {
 			// if we have a current test, append to its output
 			test := findTest(tests, cur)
+
+			if test != nil && regexLog.MatchString(line) {
+				// strip the correct amount of indentation
+				line = stripIndent(line, test.SubtestIndent+1)
+				logContinuing = true
+			} else if logContinuing && countIndent(line) >= test.SubtestIndent+2 {
+				// continuation of the previous log line
+				line = stripIndent(line, test.SubtestIndent+1)
+			} else {
+				logContinuing = false
+			}
+
 			if test != nil {
-				test.Output = append(test.Output, stripIndent(line, test.SubtestIndent+1))
+				test.Output = append(test.Output, line)
 			} else {
 				// buffer anything else that we didn't recognize
 				buffers[cur] = append(buffers[cur], line)
 			}
+			wasOutput = true
+		}
+		if !wasOutput {
+			logContinuing = false
 		}
 	}
 
