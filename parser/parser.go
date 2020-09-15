@@ -12,7 +12,7 @@ import (
 // Result represents a test result.
 type Result int
 
-// Test result constants
+//go:generate stringer -type=Result
 const (
 	PASS Result = iota
 	FAIL

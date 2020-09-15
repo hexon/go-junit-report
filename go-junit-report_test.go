@@ -1627,7 +1627,7 @@ func TestParser(t *testing.T) {
 					}
 
 					if test.Result != expTest.Result {
-						t.Errorf("Test.Result == %d, want %d", test.Result, expTest.Result)
+						t.Errorf("Test.Result == %v, want %v", test.Result, expTest.Result)
 					}
 
 					testOutput := strings.Join(test.Output, "\n")
