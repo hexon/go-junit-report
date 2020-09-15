@@ -304,7 +304,7 @@ func findTest(tests []*Test, name string) *Test {
 
 func containsFailures(tests []*Test) bool {
 	for _, test := range tests {
-		if test.Result == FAIL {
+		if test.Result == FAIL || test.Result == ERROR {
 			return true
 		}
 	}
