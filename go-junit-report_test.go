@@ -15,12 +15,13 @@ import (
 )
 
 type TestCase struct {
-	name            string
-	reportName      string
-	report          *parser.Report
-	noXMLHeader     bool
-	packageName     string
-	stripANSIEscape bool
+	name                 string
+	reportName           string
+	report               *parser.Report
+	noXMLHeader          bool
+	packageName          string
+	fullPackageClassname bool
+	stripANSIEscape      bool
 }
 
 var testCases = []TestCase{
@@ -1690,7 +1691,7 @@ func testJUnitFormatter(t *testing.T, goVersion string) {
 
 			var junitReport bytes.Buffer
 
-			if err = formatter.JUnitReportXML(testCase.report, testCase.noXMLHeader, goVersion, testCase.stripANSIEscape, &junitReport); err != nil {
+			if err = formatter.JUnitReportXML(testCase.report, testCase.noXMLHeader, goVersion, testCase.stripANSIEscape, testCase.fullPackageClassname, &junitReport); err != nil {
 				t.Fatal(err)
 			}
 

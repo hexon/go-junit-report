@@ -73,7 +73,7 @@ type JUnitFailure struct {
 
 // JUnitReportXML writes a JUnit xml representation of the given report to w
 // in the format described at http://windyroad.org/dl/Open%20Source/JUnit.xsd
-func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, stripANSIEscape bool, w io.Writer) error {
+func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, fullPackageClassname bool, stripANSIEscape bool, w io.Writer) error {
 	suites := JUnitTestSuites{}
 
 	// convert Report to JUnit test suites
@@ -89,8 +89,10 @@ func JUnitReportXML(report *parser.Report, noXMLHeader bool, goVersion string, s
 		}
 
 		classname := pkg.Name
-		if idx := strings.LastIndex(classname, "/"); idx > -1 && idx < len(pkg.Name) {
-			classname = pkg.Name[idx+1:]
+		if !fullPackageClassname {
+			if idx := strings.LastIndex(classname, "/"); idx > -1 && idx < len(pkg.Name) {
+				classname = pkg.Name[idx+1:]
+			}
 		}
 
 		// properties

@@ -31,6 +31,8 @@ go test -v -bench . ./... 2>&1 | go-junit-report > report.xml
 Command line flags:
 ```
 Usage of go-junit-report:
+  -full-package-classname
+        use the full package name as the test classname instead of just the last part
   -go-version string
         specify the value to use for the go.version property in the generated XML
   -no-xml-header

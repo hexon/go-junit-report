@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	noXMLHeader     = flag.Bool("no-xml-header", false, "do not print xml header")
-	packageName     = flag.String("package-name", "", "specify a package name (compiled test have no package name in output)")
-	goVersionFlag   = flag.String("go-version", "", "specify the value to use for the go.version property in the generated XML")
-	setExitCode     = flag.Bool("set-exit-code", false, "set exit code to 1 if tests failed")
-	stripANSIEscape = flag.Bool("strip-ansi-escape-codes", false, "strip ANSI escape codes (terminal color codes)")
+	noXMLHeader          = flag.Bool("no-xml-header", false, "do not print xml header")
+	packageName          = flag.String("package-name", "", "specify a package name (compiled test have no package name in output)")
+	goVersionFlag        = flag.String("go-version", "", "specify the value to use for the go.version property in the generated XML")
+	setExitCode          = flag.Bool("set-exit-code", false, "set exit code to 1 if tests failed")
+	stripANSIEscape      = flag.Bool("strip-ansi-escape-codes", false, "strip ANSI escape codes (terminal color codes)")
+	fullPackageClassname = flag.Bool("full-package-classname", false, "use the full package name as the test classname instead of just the last part")
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 	}
 
 	// Write xml
-	err = formatter.JUnitReportXML(report, *noXMLHeader, *goVersionFlag, *stripANSIEscape, os.Stdout)
+	err = formatter.JUnitReportXML(report, *noXMLHeader, *goVersionFlag, *fullPackageClassname, *stripANSIEscape, os.Stdout)
 	if err != nil {
 		fmt.Printf("Error writing XML: %s\n", err)
 		os.Exit(1)
