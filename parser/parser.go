@@ -49,7 +49,7 @@ type Test struct {
 }
 
 var (
-	regexStatus   = regexp.MustCompile(`--- (PASS|FAIL|SKIP): (.+) \((\d+\.\d+)(?: seconds|s)\)`)
+	regexStatus   = regexp.MustCompile(`--- (PASS|FAIL|SKIP): (.+)(?: \((\d+\.\d+)(?: seconds|s)\))?`)
 	regexIndent   = regexp.MustCompile(`^(    |\t)+---`)
 	regexCoverage = regexp.MustCompile(`^coverage:\s+(\d+\.\d+)%\s+of\s+statements(?:\sin\s.+)?$`)
 	regexResult   = regexp.MustCompile(`^(ok|FAIL|\?)\s+([^ ]+)\s+(?:(\d+\.\d+)s|\(cached\)|\[no test files\]|(\[\w+ failed]))(?:\s+coverage:\s+(\d+\.\d+)%\sof\sstatements(?:\sin\s.+)?)?$`)
