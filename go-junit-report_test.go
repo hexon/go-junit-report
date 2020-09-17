@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jstemmer/go-junit-report/formatter"
-	"github.com/jstemmer/go-junit-report/parser"
+	"github.com/hexon/go-junit-report/formatter"
+	"github.com/hexon/go-junit-report/parser"
 )
 
 type TestCase struct {

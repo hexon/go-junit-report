@@ -11,7 +11,7 @@ import (
 
 	"github.com/acarl005/stripansi"
 
-	"github.com/jstemmer/go-junit-report/parser"
+	"github.com/hexon/go-junit-report/parser"
 )
 
 // JUnitTestSuites is a collection of JUnit test suites.
