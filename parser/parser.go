@@ -57,7 +57,7 @@ var (
 	regexBenchmark       = regexp.MustCompile(`^(Benchmark[^ -]+)(?:(?:-\d+\s+|\s+)(\d+)\s+(\d+|\d+\.\d+)\sns/op(?:\s+(\d+)\sB/op)?(?:\s+(\d+)\sallocs/op)?)?$`)
 	regexLog             = regexp.MustCompile(`^(    |\t)+(.+\.go:\d+: .*)$`)
 	regexSummary         = regexp.MustCompile(`^(PASS|FAIL|SKIP)$`)
-	regexPackageWithTest = regexp.MustCompile(`^# ([^\[\]]+) \[[^\]]+\]$`)
+	regexPackageWithTest = regexp.MustCompile(`^([^\[\]]+) \[[^\]]+\]$`)
 )
 
 // Parse parses go test output from reader r and returns a report with the
@@ -217,6 +217,12 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 			coveragePct = matches[1]
 		} else if strings.HasPrefix(line, "# ") {
 			// indicates a capture of build output of a package. set the current build package.
+
+			line = strings.TrimPrefix(line, "# ")
+			// when go test -cover is run, a build error looks different
+			// e.g.: "# cover package/name"
+			line = strings.TrimPrefix(line, "cover ")
+
 			packageWithTestBinary := regexPackageWithTest.FindStringSubmatch(line)
 			if packageWithTestBinary != nil {
 				// Sometimes, the text after "# " shows the name of the test binary
@@ -224,7 +230,7 @@ func Parse(r io.Reader, pkgName string) (*Report, error) {
 				// e.g.: "# package/name [package/name.test]"
 				capturedPackage = packageWithTestBinary[1]
 			} else {
-				capturedPackage = line[2:]
+				capturedPackage = line
 			}
 		} else if capturedPackage != "" {
 			// current line is build failure capture for the current built package
